@@ -7,11 +7,11 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InputMedi
 from youtubesearchpython.__future__ import VideosSearch
 
 import config
-from SHUKLAMUSIC import app
-from SHUKLAMUSIC.misc import _boot_
-from SHUKLAMUSIC.plugins.sudo.sudoers import sudoers_list
-from SHUKLAMUSIC.utils import bot_sys_stats
-from SHUKLAMUSIC.utils.database import (
+from EsproMusic import app
+from EsproMusic.misc import _boot_
+from EsproMusic.plugins.sudo.sudoers import sudoers_list
+from EsproMusic.utils import bot_sys_stats
+from EsproMusic.utils.database import (
     add_served_chat,
     add_served_user,
     blacklisted_chats,
@@ -21,9 +21,9 @@ from SHUKLAMUSIC.utils.database import (
     is_banned_user,
     is_on_off,
 )
-from SHUKLAMUSIC.utils.decorators.language import LanguageStart
-from SHUKLAMUSIC.utils.formatters import get_readable_time
-from SHUKLAMUSIC.utils.inline import help_pannel, private_panel, start_panel
+from EsproMusic.utils.decorators.language import LanguageStart
+from EsproMusic.utils.formatters import get_readable_time
+from EsproMusic.utils.inline import help_pannel, private_panel, start_panel
 from config import BANNED_USERS
 from strings import get_string
 
