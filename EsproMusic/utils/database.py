@@ -1,8 +1,8 @@
 import random
 from typing import Dict, List, Union
 
-from EsproMusic import userbot
-from EsproMusic.core.mongo import mongodb
+from BrandrdXMusic import userbot
+from BrandrdXMusic.core.mongo import mongodb, pymongodb
 
 authdb = mongodb.adminauth
 authuserdb = mongodb.authuser
@@ -21,6 +21,14 @@ playtypedb = mongodb.playtypedb
 skipdb = mongodb.skipmode
 sudoersdb = mongodb.sudoers
 usersdb = mongodb.tgusersdb
+privatedb = mongodb.privatechats
+suggdb = mongodb.suggestion
+cleandb = mongodb.cleanmode
+queriesdb = mongodb.queries
+userdb = mongodb.userstats
+videodb = mongodb.vipvideocalls
+chatsdbc = mongodb.chatsc  # for clone
+usersdbc = mongodb.tgusersdbc  # for clone
 
 # Shifting to memory [mongo sucks often]
 active = []
@@ -37,6 +45,122 @@ pause = {}
 playmode = {}
 playtype = {}
 skipmode = {}
+privatechats = {}
+cleanmode = []
+suggestion = {}
+mute = {}
+audio = {}
+video = {}
+
+# Total Queries on bot
+
+
+async def get_queries() -> int:
+    chat_id = 98324
+    mode = await queriesdb.find_one({"chat_id": chat_id})
+    if not mode:
+        return 0
+    return mode["mode"]
+
+
+async def set_queries(mode: int):
+    chat_id = 98324
+    queries = await queriesdb.find_one({"chat_id": chat_id})
+    if queries:
+        mode = queries["mode"] + mode
+    return await queriesdb.update_one(
+        {"chat_id": chat_id}, {"$set": {"mode": mode}}, upsert=True
+    )
+
+
+# Top Chats DB
+
+
+async def get_top_chats() -> dict:
+    results = {}
+    async for chat in chattopdb.find({"chat_id": {"$lt": 0}}):
+        chat_id = chat["chat_id"]
+        total = 0
+        for i in chat["vidid"]:
+            counts_ = chat["vidid"][i]["spot"]
+            if counts_ > 0:
+                total += counts_
+                results[chat_id] = total
+    return results
+
+
+async def get_global_tops() -> dict:
+    results = {}
+    async for chat in chattopdb.find({"chat_id": {"$lt": 0}}):
+        for i in chat["vidid"]:
+            counts_ = chat["vidid"][i]["spot"]
+            title_ = chat["vidid"][i]["title"]
+            if counts_ > 0:
+                if i not in results:
+                    results[i] = {}
+                    results[i]["spot"] = counts_
+                    results[i]["title"] = title_
+                else:
+                    spot = results[i]["spot"]
+                    count_ = spot + counts_
+                    results[i]["spot"] = count_
+    return results
+
+
+async def get_particulars(chat_id: int) -> Dict[str, int]:
+    ids = await chattopdb.find_one({"chat_id": chat_id})
+    if not ids:
+        return {}
+    return ids["vidid"]
+
+
+async def get_particular_top(chat_id: int, name: str) -> Union[bool, dict]:
+    ids = await get_particulars(chat_id)
+    if name in ids:
+        return ids[name]
+
+
+async def update_particular_top(chat_id: int, name: str, vidid: dict):
+    ids = await get_particulars(chat_id)
+    ids[name] = vidid
+    await chattopdb.update_one(
+        {"chat_id": chat_id}, {"$set": {"vidid": ids}}, upsert=True
+    )
+
+
+# Top User DB
+
+
+async def get_userss(chat_id: int) -> Dict[str, int]:
+    ids = await userdb.find_one({"chat_id": chat_id})
+    if not ids:
+        return {}
+    return ids["vidid"]
+
+
+async def get_user_top(chat_id: int, name: str) -> Union[bool, dict]:
+    ids = await get_userss(chat_id)
+    if name in ids:
+        return ids[name]
+
+
+async def update_user_top(chat_id: int, name: str, vidid: dict):
+    ids = await get_userss(chat_id)
+    ids[name] = vidid
+    await userdb.update_one({"chat_id": chat_id}, {"$set": {"vidid": ids}}, upsert=True)
+
+
+async def get_topp_users() -> dict:
+    results = {}
+    async for chat in userdb.find({"chat_id": {"$gt": 0}}):
+        user_id = chat["chat_id"]
+        total = 0
+        for i in chat["vidid"]:
+            counts_ = chat["vidid"][i]["spot"]
+            if counts_ > 0:
+                total += counts_
+        results[user_id] = total
+    return results
 
 
 async def get_assistant_number(chat_id: int) -> str:
@@ -67,7 +191,7 @@ async def set_assistant_new(chat_id, number):
 
 
 async def set_assistant(chat_id):
-    from EsproMusic.core.userbot import assistants
+    from BrandrdXMusic.core.userbot import assistants
 
     ran_assistant = random.choice(assistants)
     assistantdict[chat_id] = ran_assistant
@@ -81,7 +205,7 @@ async def set_assistant(chat_id):
 
 
 async def get_assistant(chat_id: int) -> str:
-    from EsproMusic.core.userbot import assistants
+    from BrandrdXMusic.core.userbot import assistants
 
     assistant = assistantdict.get(chat_id)
     if not assistant:
@@ -108,7 +232,7 @@ async def get_assistant(chat_id: int) -> str:
 
 
 async def set_calls_assistant(chat_id):
-    from EsproMusic.core.userbot import assistants
+    from BrandrdXMusic.core.userbot import assistants
 
     ran_assistant = random.choice(assistants)
     assistantdict[chat_id] = ran_assistant
@@ -121,7 +245,7 @@ async def set_calls_assistant(chat_id):
 
 
 async def group_assistant(self, chat_id: int) -> int:
-    from EsproMusic.core.userbot import assistants
+    from BrandrdXMusic.core.userbot import assistants
 
     assistant = assistantdict.get(chat_id)
     if not assistant:
@@ -298,19 +422,35 @@ async def set_lang(chat_id: int, lang: str):
     await langdb.update_one({"chat_id": chat_id}, {"$set": {"lang": lang}}, upsert=True)
 
 
-async def is_Music_playing(chat_id: int) -> bool:
+async def is_music_playing(chat_id: int) -> bool:
     mode = pause.get(chat_id)
     if not mode:
         return False
     return mode
 
 
-async def Music_on(chat_id: int):
+async def music_on(chat_id: int):
     pause[chat_id] = True
 
 
-async def Music_off(chat_id: int):
+async def music_off(chat_id: int):
     pause[chat_id] = False
+
+
+# Muted
+async def is_muted(chat_id: int) -> bool:
+    mode = mute.get(chat_id)
+    if not mode:
+        return False
+    return mode
+
+
+async def mute_on(chat_id: int):
+    mute[chat_id] = True
+
+
+async def mute_off(chat_id: int):
+    mute[chat_id] = False
 
 
 async def get_active_chats() -> list:
@@ -489,6 +629,10 @@ async def add_served_chat(chat_id: int):
     return await chatsdb.insert_one({"chat_id": chat_id})
 
 
+async def delete_served_chat(chat_id: int):
+    await chatsdb.delete_one({"chat_id": chat_id})
+
+
 async def blacklisted_chats() -> list:
     chats_list = []
     async for chat in blacklist_chatdb.find({"chat_id": {"$lt": 0}}):
@@ -644,3 +788,11 @@ async def remove_banned_user(user_id: int):
     if not is_gbanned:
         return
     return await blockeddb.delete_one({"user_id": user_id})
+
+
+# Private Served Chats
+
+
+async def get_private_served_chats() -> list:
+    chats_list = []
+    async for chat in p
