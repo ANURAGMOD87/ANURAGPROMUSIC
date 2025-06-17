@@ -1,27 +1,8 @@
-from pyrogram import Client, enums, filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, ChatPermissions, Message
-from EsproMusic import app
-from EsproMusic.misc import SUDOERS
-import asyncio
-from pyrogram import Client, filters, enums
-from pyrogram.types import Message
-from EsproMusic import app, Userbot
-from EsproMusic.utils.database import get_assistant
-from pyrogram.errors import UserAlreadyParticipant, UserNotParticipant, ChatAdminRequired
-from pyrogram.types import Message, ChatPrivileges
-import asyncio
-from typing import Optional
-from random import randint
-from pyrogram.raw.types import InputGroupCall, InputPeerChannel, InputPeerChat
 from pyrogram.enums import ParseMode
+
 from EsproMusic import app
 from EsproMusic.utils.database import is_on_off
-#from config import LOG_GROUP_ID as LOG_GROUP_ID
-from pyrogram import Client, filters
-from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
-from pyrogram.enums import MessageEntityType
-#from pyrogram.types import Message, User, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
-import random
+from config import LOGGER_ID
 
 
 async def play_logs(message, streamtype):
