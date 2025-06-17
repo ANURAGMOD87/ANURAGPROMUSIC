@@ -16,7 +16,7 @@ from pyrogram.raw.types import InputGroupCall, InputPeerChannel, InputPeerChat
 from pyrogram.enums import ParseMode
 from EsproMusic import app
 from EsproMusic.utils.database import is_on_off
-from config import LOG_GROUP_ID as LOG_GROUP_ID
+#from config import LOG_GROUP_ID as LOG_GROUP_ID
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 from pyrogram.enums import MessageEntityType
