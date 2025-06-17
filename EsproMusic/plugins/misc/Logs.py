@@ -12,7 +12,7 @@ from EsproMusic.utils.database import (
 )
 from pyrogram.enums import MessageEntityType
 from pyrogram.types import Message, User, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
-from config import LOG_GROUP_ID as LOG_GROUP_ID
+from config import LOGGER_ID
 
 
 async def new_message(chat_id: int, message: str, reply_markup=None):
@@ -37,7 +37,7 @@ async def on_new_chat_members(client: Client, message: Message):
         ])
 
         await add_served_chat(chat_id)
-        await new_message(LOG_GROUP_ID, am, reply_markup)
+        await new_message(LOGGER_ID, am, reply_markup)
 
 @app.on_message(filters.left_chat_member)
 async def on_left_chat_member(client: Client, message: Message):
@@ -55,4 +55,4 @@ async def on_left_chat_member(client: Client, message: Message):
                 )
             ]
         ])
-        await new_message(LOG_GROUP_ID, ambye, reply_markup)
+        await new_message(LOGGER_ID, ambye, reply_markup)
