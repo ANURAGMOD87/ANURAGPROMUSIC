@@ -1,11 +1,11 @@
 from pyrogram import filters
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
-from ISTKHARX import app
+from EsproMusic import app
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, Message, User
 from pyrogram.errors import ChatAdminRequired, UserNotParticipant, ChatWriteForbidden, PeerIdInvalid, ChatAdminRequired
 from pyrogram.enums import ChatAction, ChatType, MessageEntityType
 from pyrogram import Client, filters, enums
-from ISTKHARX.misc import SUDOERS
+from EsproMusic.misc import SUDOERS
 
 buttons = [
     [
@@ -28,6 +28,6 @@ async def promos(client, message: Message):
 ➻ ʟᴀɢ ғʀᴇᴇ.
 """
     await message.reply(
-        text=ISTKHARBOT,
+        text=ANURAG,
         reply_markup=InlineKeyboardMarkup(buttons)
     )
