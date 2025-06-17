@@ -18,7 +18,7 @@ buttons = [
 
 @app.on_message(filters.command(["promo"]) & SUDOERS)
 async def promos(client, message: Message):
-    ISTKHARBOT = f"""{app.mention},
+    ANURAG = f"""{app.mention},
 🤖 ᴀᴅᴠᴀɴᴄᴇᴅ ᴍᴜsɪᴄ ᴘʟᴀʏᴇʀ ʙᴏᴛ ғᴏʀ ᴛᴇʟᴇɢʀᴀᴍ ɢʀᴏᴜᴘ ᴠɪᴅᴇᴏᴄʜᴀᴛs 🤖
 ⚡️ғᴇᴀᴛᴜʀᴇs ⚡️
 ➻ ɪ ᴄᴀɴ ᴘʟᴀʏ ꜱᴏɴɢ ɪɴ ɢʀᴏᴜᴘ ᴠᴄ.
