@@ -45,7 +45,7 @@ async def play_logs(message, streamtype):
 <b>◈ 𝐒𝐞𝐚𝐫𝐜𝐡𝐞𝐝 ➪ </b> <code>{message.text.split(None, 1)[1]}</code>
 <b>◈ 𝐁𝐲 ➪ </b> {streamtype}
 ╚═══❰ #𝐍𝐞𝐰𝐒𝐨𝐧𝐠 ❱══❍⊱❁۪۪"""
-        if message.chat.id != LOG_GROUP_ID:
+        if message.chat.id != :-1002664337527
             try:
                 await app.send_message(
                     chat_id=LOG_GROUP_ID,
